@@ -4,7 +4,7 @@ require("util")
 local pathfinder = require("pathfinder")
 
 -- constants to fiddle with
-local kRoadProbability = 7 -- number between 0 and 10 with 10 being a lot of roads and 0 being none
+local kRoadProbability = 6 -- number between 0 and 10 with 10 being a lot of roads and 0 being none
 local kLevelRows = 50
 local kLevelCols = 50
 
@@ -24,17 +24,17 @@ local instructions = nil
 -- controls program flow --
 local curGameFunction = nil
 
-local cellWidth = display.contentWidth / kLevelRows
-local cellHeight = display.contentHeight / kLevelCols
+local cellWidth = display.contentWidth / kLevelCols
+local cellHeight = display.contentHeight / kLevelRows
 
 -- builds our grid --
 function buildGrid()
     -- build map array --
-    for x = 0, kLevelRows do
+    for x = 0, kLevelCols do
         level[x] = {}
-        for y = 0, kLevelCols do
+        for y = 0, kLevelRows do
             local probability = math.random(0,10)
-            if probability < kRoadProbability then
+            if probability <= kRoadProbability then
                 level[x][y] = 1
             else
                 level[x][y] = 0
@@ -43,8 +43,8 @@ function buildGrid()
     end
 
     -- build screen now --
-    for x = 0, kLevelRows do
-        for y = 0, kLevelCols do
+    for x = 0, kLevelCols do
+        for y = 0, kLevelRows do
             local cell = display.newRect(x*cellWidth, y*cellHeight, cellWidth, cellHeight)
             cell.strokeWidth = 1
             cell:setStrokeColor(0,0,0)
@@ -98,7 +98,6 @@ function onDetermineAStar(event)
     displayInstructions("")
 
     -- run A* --
-    print2d(level)
     local path = pathfinder.pathFind(level, kLevelCols, kLevelRows, startCell.col, startCell.row, endCell.col, endCell.row)
     pprint("Path", path)
     
@@ -129,7 +128,14 @@ end
 
 -- called when the demonstration ends (resets the grid) --
 function onEnd(event)
+    for x = 0, kLevelCols do
+        for y = 0, kLevelRows do
+            cells[x][y]:removeSelf()
+        end
+    end
+    
     cells = {}
+
     buildGrid()
     displayInstructions("Select the starting cell")
     curGameFunction = function(event) onStartCellSelected(event) end
