@@ -1,0 +1,21 @@
+[Project ID]
+Signature=UE Proj: v.1
+[Project Information]
+Use Relative Directory=1
+Relative to Project File=1
+Include Sub Directories=1
+Project Tagfile=
+Project Wordfile=
+Filter=
+Create Tagfile=0
+[Files]
+0=build.settings
+1=categoryGrid.lua
+2=config.lua
+3=dynamicSlider.lua
+4=main.lua
+5=navBar.lua
+6=progressBar.lua
+7=rss.lua
+8=rssDownloader.lua
+9=xml.lua
