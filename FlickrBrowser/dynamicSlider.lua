@@ -1,6 +1,6 @@
 module(..., package.seeall)
 
-local navBar = require("navBar")
+local titleBar = require("titleBar")
 
 function new(stories)
     local sliderGroup = display.newGroup()
@@ -19,10 +19,10 @@ function new(stories)
     sliderGroup:insert(sliderGroup.background)
     sliderGroup:insert(sliderGroup.imageContainer)
     
-    sliderGroup.navBar = navBar.new()
-    navBar.setTitle(sliderGroup.navBar, sliderGroup.stories[1].title)
-    sliderGroup.navBar.isVisible = false
-    sliderGroup:insert(sliderGroup.navBar)
+    sliderGroup.titleBar = titleBar.new()
+    titleBar.setTitle(sliderGroup.titleBar, sliderGroup.stories[1].title)
+    sliderGroup.titleBar.isVisible = false
+    sliderGroup:insert(sliderGroup.titleBar)
 
     createImages(sliderGroup)
 
@@ -51,7 +51,7 @@ function onSliderTouched(event, sliderGroup)
 
             if dragDistance > -10 and dragDistance < 10 then
                 focusOnCurImage(sliderGroup)
-                sliderGroup.navBar.isVisible = not sliderGroup.navBar.isVisible
+                sliderGroup.titleBar.isVisible = not sliderGroup.titleBar.isVisible
             elseif dragDistance < -100 then
                 focusOnNextImage(sliderGroup)
             elseif dragDistance > 100 then
@@ -77,7 +77,7 @@ function focusOnPrevImage(sliderGroup)
         sliderGroup.curStoryIndex = #sliderGroup.stories
     end
     
-    navBar.setTitle(sliderGroup.navBar, sliderGroup.stories[sliderGroup.curStoryIndex].title)
+    titleBar.setTitle(sliderGroup.titleBar, sliderGroup.stories[sliderGroup.curStoryIndex].title)
     sliderGroup.nextImage = sliderGroup.curImage
     sliderGroup.curImage = sliderGroup.prevImage
     createPrevImage(sliderGroup)
@@ -95,7 +95,7 @@ function focusOnNextImage(sliderGroup)
         sliderGroup.curStoryIndex = 1
     end
     
-    navBar.setTitle(sliderGroup.navBar, sliderGroup.stories[sliderGroup.curStoryIndex].title)
+    titleBar.setTitle(sliderGroup.titleBar, sliderGroup.stories[sliderGroup.curStoryIndex].title)
 
     sliderGroup.prevImage = sliderGroup.curImage
     sliderGroup.curImage = sliderGroup.nextImage
