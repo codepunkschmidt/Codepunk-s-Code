@@ -1,17 +1,18 @@
 [Open Files]
 Active File Display Mode=3
-Active File Index=0
-Open File Line0=16350
-Open File Line1=0
-Open File Pos0=18213
-Open File Pos1=3963
-Open File Window Pos0=2,3,-1,-1,-8,-30,50,50,1316,514
-Open File Window Pos1=0,1,-1,-1,-8,-30,150,150,1466,562
+Active File Index=1
+Open File Line0=28829
+Open File Line1=1654
+Open File Pos0=31464
+Open File Pos1=2166
+Open File Window Pos0=0,1,-1,-1,-8,-30,50,50,1316,514
+Open File Window Pos1=2,3,-1,-1,-8,-30,25,25,1341,437
 Open File0=C:\Users\maschmid\Dropbox\flickrBrowserArticle.txt
-Open File1=.\dynamicSlider.lua
+Open File1=.\main.lua
 Open File2=
 Remember Files=1
 
 [Project Information]
 Project Start=DB070900010013000B000000000000000A
 Working Time=211
+

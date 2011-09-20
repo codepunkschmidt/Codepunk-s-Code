@@ -68,12 +68,12 @@ function init()
     
     mainGroup.categoryGrid = categoryGrid.new(categories, function(category) onCategorySelected(category) end)
     mainGroup:insert(mainGroup.categoryGrid)
-    mainGroup.rssDownloader = rssDownloader.new()
 end
 
 function onCategorySelected(category)
     if mainGroup.categorySelected == false then
         mainGroup.categorySelected = true
+        mainGroup.rssDownloader = rssDownloader.new()
         rssDownloader.downloadFeed(mainGroup.rssDownloader, baseUrl .. category.name, onFeedDownloadStatus, onFeedDownloadError)
     end
 end
