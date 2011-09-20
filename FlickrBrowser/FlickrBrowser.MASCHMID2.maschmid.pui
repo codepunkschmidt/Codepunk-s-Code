@@ -1,8 +1,26 @@
 [Open Files]
-Active File Display Mode=-1
-Open File0=
+Active File Display Mode=3
+Active File Index=1
+Open File Line0=675
+Open File Line1=0
+Open File Line2=14521
+Open File Line3=2402
+Open File Pos0=1091
+Open File Pos1=464
+Open File Pos2=16932
+Open File Pos3=0
+Open File Window Pos0=0,1,-1,-1,-8,-30,50,50,1316,512
+Open File Window Pos1=2,3,-1,-1,-8,-30,75,75,1341,539
+Open File Window Pos2=0,1,-1,-1,-8,-30,100,100,1366,564
+Open File Window Pos3=0,1,-1,-1,-8,-30,25,25,1341,437
+Open File0=.\main.lua
+Open File1=.\rssDownloader.lua
+Open File2=C:\Users\maschmid\Desktop\flickrBrowserArticle.txt
+Open File3=.\dynamicSlider.lua
+Open File4=
 Remember Files=1
 
 [Project Information]
 Project Start=DB070900010013000B000000000000000A
 Working Time=211
+

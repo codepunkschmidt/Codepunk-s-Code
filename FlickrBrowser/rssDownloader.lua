@@ -3,60 +3,59 @@ module(..., package.seeall)
 local rss = require("rss")
 
 function new()
-    local rssGroup = display.newGroup()
-    return rssGroup
+    local rssObject = {}
+    return rssObject
 end
 
-function downloadFeed(rssGroup, url, statusCallback, errorCallback)
+function downloadFeed(rssObject, url, statusCallback, errorCallback)
     cleanDocumentsDirectory()
-    rssGroup.statusCallback = statusCallback
-    rssGroup.errorCallback = errorCallback
+    rssObject.statusCallback = statusCallback
+    rssObject.errorCallback = errorCallback
     
-    network.download( url, "GET", function(event) onNetworkStatus(event, rssGroup) end, "rss2.xml", system.DocumentsDirectory )
+    network.download( url, "GET", function(event) onNetworkStatus(event, rssObject) end, "rss2.xml", system.DocumentsDirectory )
 end
 
-function onNetworkStatus(event, rssGroup)
+function onNetworkStatus(event, rssObject)
     if ( event.isError ) then
-        print("Error downloading feed")
-        rssGroup.errorCallback()
+        rssObject.errorCallback()
     else
-        parseFeed(rssGroup)
+        parseFeed(rssObject)
     end
 end
 
-function parseFeed(rssGroup)    
-    rssGroup.stories = {}
+function parseFeed(rssObject)    
+    rssObject.stories = {}
 
-    rssGroup.stories = rss.feed("rss2.xml", system.DocumentsDirectory)
+    rssObject.stories = rss.feed("rss2.xml", system.DocumentsDirectory)
     
-    if rssGroup.statusCallback ~= nil then
-        local status = {event = "RSSDownloaded", stories = #rssGroup.stories}
-        rssGroup.statusCallback(status)
+    if rssObject.statusCallback ~= nil then
+        local status = {event = "RSSDownloaded", stories = #rssObject.stories}
+        rssObject.statusCallback(status)
     end
     
-    for i = 1, #rssGroup.stories do
-        parseStory(rssGroup, rssGroup.stories[i], i)
+    for i = 1, #rssObject.stories do
+        parseStory(rssObject, rssObject.stories[i], i)
     end
 end
 
-function parseStory(rssGroup, story, index)
+function parseStory(rssObject, story, index)
     story.rssImage = "rssImage" .. index .. ".png"
-    network.download( story.mediaContent, "GET", function(event) onImageDownloaded(event, rssGroup, story) end, story.rssImage, system.DocumentsDirectory )
+    network.download( story.mediaContent, "GET", function(event) onImageDownloaded(event, rssObject, story) end, story.rssImage, system.DocumentsDirectory )
 end
 
-function onImageDownloaded(event, rssGroup, story)
+function onImageDownloaded(event, rssObject, story)
     if event.isError then
-        if rssGroup.errorCallback ~= nil then
-            rssGroup.errorCallback()
+        if rssObject.errorCallback ~= nil then
+            rssObject.errorCallback()
         end
     else
         local status = {event = "RSSImageDownloaded"}
-        rssGroup.statusCallback(status)
+        rssObject.statusCallback(status)
     end
 end
 
-function getStories(rssGroup)
-    return rssGroup.stories
+function getStories(rssObject)
+    return rssObject.stories
 end
 
 function cleanDocumentsDirectory()
