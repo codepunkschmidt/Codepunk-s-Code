@@ -1,18 +1,129 @@
 -- A* pathfinding module
 -- Author: Lerg
 -- Release date: 2011-08-25
--- Version: 1.0
+-- Version: 1.1
 -- License: MIT
 -- Based on the python implementation.
--- Requires my utils module, in particular newHeap(), table_len() and table_reverse() functions
 --
 -- USAGE:
 --   Import this module and use pathFind() function. Map should be zero indexed (first element index is zero).
-_M = {}
+local _M = {}
  
 local mAbs = math.abs
 local mSqrt = math.sqrt
+
+-------------------------------------------
+-- Set a value to bounds
+-------------------------------------------
+local function clamp(value, low, high)
+    if value < low then value = low
+    elseif high and value > high then value = high end
+    return value
+end
+
+-------------------------------------------
+-- Implementation of min binary heap for use as a priority queue
+-- each element should have 'priority' field or one that you defined
+-- when created a heap.
+-------------------------------------------
+local function newHeap (priority)
+    if not priority then
+        priority = 'priority'
+    end
+    heapObject = {}
+    heapObject.heap = {}
+    heapObject.len = 0 -- Size of the heap
+    function heapObject:push (newElement) -- Adds new element to the heap
+        local index = self.len
+        self.heap[index] = newElement -- Add to bottom of the heap
+        self.len = self.len + 1 -- Increase heap elements counter
+        self:heapifyUp(index) -- Maintane min heap
+    end
  
+    function heapObject:heapifyUp (index)
+        local parentIndex = clamp(math.floor((index - 1) / 2), 0)
+        if self.heap[index][priority] < self.heap[parentIndex][priority] then
+            self.heap[index], self.heap[parentIndex] = self.heap[parentIndex], self.heap[index] -- Swap
+            self:heapifyUp(parentIndex) -- Continue sorting up the heap
+        end
+    end
+ 
+    function heapObject:pop (index) -- Returns the element with the smallest priority or specific one
+        if not index then index = 0 end
+        local minElement = self.heap[index]
+        self.heap[index] = self.heap[self.len - 1] -- Swap
+        -- Remove element from heap
+        self.heap[self.len - 1] = nil
+        self.len = self.len - 1
+        self:heapifyDown(index) -- Maintane min heap
+        return minElement
+    end
+ 
+    function heapObject:heapifyDown (index)
+        local leftChildIndex = 2 * index + 1
+        local rightChildIndex = 2 * index + 2
+        if  (self.heap[leftChildIndex] and self.heap[leftChildIndex][priority] and self.heap[leftChildIndex][priority] < self.heap[index][priority])
+            or
+            (self.heap[rightChildIndex] and self.heap[rightChildIndex][priority] and self.heap[rightChildIndex][priority] < self.heap[index][priority]) then
+                if (not self.heap[rightChildIndex] or not self.heap[rightChildIndex][priority]) or self.heap[leftChildIndex][priority] < self.heap[rightChildIndex][priority] then
+                    self.heap[index], self.heap[leftChildIndex] = self.heap[leftChildIndex], self.heap[index] -- Swap
+                    self:heapifyDown(leftChildIndex) -- Continue sorting down the heap
+                else
+                    self.heap[index], self.heap[rightChildIndex] = self.heap[rightChildIndex], self.heap[index] -- Swap
+                    self:heapifyDown(rightChildIndex) -- Continue sorting down the heap
+                end
+        end
+    end
+ 
+    function heapObject:root () -- Returns the root element without removing it
+        return self.heap[0]
+    end
+ 
+    return heapObject
+end
+
+-------------------------------------------
+-- Calculate number of elements in a table
+-- Correctly manages zero indexed tables
+-------------------------------------------
+function table_len (t)
+    local len = #t + 1
+    if len == 1 and t[0] == nil then
+        len = 0
+    end
+    return len
+end
+ 
+-------------------------------------------
+-- Reverse a table
+-------------------------------------------
+local function table_reverse (t)
+    local r = {}
+    local tl = table_len(t)
+    for k,v in pairs(t) do
+        r[tl - k - 1] = v
+    end
+    return r
+end
+
+-------------------------------------------
+-- Print two dimensional arrays
+-------------------------------------------
+function print2d(t)
+    for r = 0, table_len(t) - 1 do
+        local str = ''
+        for c = 0, table_len(t[r]) - 1 do
+            local val = t[c][r] or 0 -- Codepunk: Changed to print in [x][y] direction
+            val = math.round(val)
+            if val == 0 then
+                val = ' '
+            end
+            str = str .. val .. ' '
+        end
+        print(str)
+    end
+end
+
 -- This represents a track node (each step)
 local function newNode (posX, posY, distance, priority)
     node = {}
@@ -171,7 +282,7 @@ function _M.pathFind(the_map, mapW, mapH, startX, startY, targetX, targetY)
                     -- by emptying one pq to the other one
                     -- except the node to be replaced will be ignored
                     -- and the new node will be pushed in instead
-                    while not (pq[pqi][0].posX == xdx and pq[pqi][0].posY == ydy) do
+                    while pq[pqi][0] and not (pq[pqi][0].posX == xdx and pq[pqi][0].posY == ydy) do
                         pq[1 - pqi]:push(pq[pqi]:pop())
                     end
                     pq[pqi]:pop() -- remove the target node
@@ -190,5 +301,5 @@ function _M.pathFind(the_map, mapW, mapH, startX, startY, targetX, targetY)
     end
     return false -- if no route found
 end
- 
+
 return _M

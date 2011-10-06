@@ -1,6 +1,6 @@
 display.setStatusBar(display.HiddenStatusBar)
 
-require("util")
+require("pprint")
 local pathfinder = require("pathfinder")
 
 -- constants to fiddle with
@@ -13,6 +13,9 @@ local level = {}
 
 -- table contains display.newRect objects --
 local cells = {}
+
+-- walks on the path
+local walker
 
 -- starting and ending cells to be selected by user --
 local startCell = {col = -1, row = -1}
@@ -93,6 +96,29 @@ function onEndCellSelected(event)
     end
 end
 
+function newWalker(path)
+    local walker = display.newCircle((startCell.col + 0.5) * cellWidth, (startCell.row + 0.5) * cellHeight, cellWidth)
+    walker.strokeWidth = 1
+    walker:setStrokeColor(0,0,0)
+    walker:setFillColor(0, 255, 255)
+    walker.pathIndex = 0
+    walker.pathLen = table_len(path)
+    walker.speed = 50
+    
+    function walker:go()
+        if self.pathIndex < self.pathLen then
+            local dir = path[self.pathIndex]
+            self.transition = transition.to(self, { time = self.speed * dir.count,
+                                                    x = self.x + dir.dx * dir.count * cellWidth,
+                                                    y = self.y + dir.dy * dir.count * cellHeight,
+                                                    onComplete = function () self:go() end})
+        end
+        self.pathIndex = self.pathIndex + 1
+    end
+    
+    return walker
+end
+
 -- called to get the A* algorithm going --
 function onDetermineAStar(event)
     displayInstructions("")
@@ -119,6 +145,10 @@ function onDetermineAStar(event)
             end
         end
         
+        -- create a moving object
+        walker = newWalker(path)
+        walker:go()
+        
         curGameFunction = function(event) onEnd(event) end
     else
         displayInstructions("Suitable path not found")
@@ -135,7 +165,12 @@ function onEnd(event)
     end
     
     cells = {}
-
+    
+    if walker then
+        walker:removeSelf()
+        walker = nil
+    end
+    
     buildGrid()
     displayInstructions("Select the starting cell")
     curGameFunction = function(event) onStartCellSelected(event) end
