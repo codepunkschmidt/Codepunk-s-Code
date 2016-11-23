@@ -1,0 +1,9 @@
+Welcome to my GitHub repository. Most of what you'll see on here utilizes the Corona SDK from Ansca Mobile (http://www.anscamobile.com). The following projects are as follows:
+
+* A-Star: An A* pathfinding demo. Details can be found at http://developer.anscamobile.com/code/pathfinding-demo
+
+* Dynamic Module Loading: A sort of plugin design pattern for Corona. Details can be found at http://developer.anscamobile.com/code/dynamic-module-loading
+
+* FlickrBrowser: A demo app that shows how to download RSS and images from Flickr and allow the user to browse them with an image slider control. Details can be found at http://developer.anscamobile.com/code/flickr-photo-browser
+
+-Codepunk
